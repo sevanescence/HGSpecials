@@ -3,6 +3,7 @@ package com.makotomiyamoto.hgspecials.meta;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public abstract class Eval {
     public static boolean shouldPassActionScript(PlayerInteractEvent event) {
@@ -40,5 +41,11 @@ public abstract class Eval {
     public static boolean mightThrowAStupidNullError(PlayerInteractEvent event) {
         return (event.getItem() == null || event.getItem().getType().equals(Material.AIR));
     }
-
+    public static boolean match(ItemStack itemStack, String match) {
+        if (itemStack == null) {
+            return false;
+        }
+        assert itemStack.getItemMeta() != null;
+        return itemStack.getItemMeta().getDisplayName().equals(match);
+    }
 }

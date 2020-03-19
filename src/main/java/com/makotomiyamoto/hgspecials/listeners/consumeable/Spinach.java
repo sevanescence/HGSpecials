@@ -1,9 +1,10 @@
 package com.makotomiyamoto.hgspecials.listeners.consumeable;
 
 import com.makotomiyamoto.hgspecials.meta.Eval;
+import com.makotomiyamoto.hgspecials.meta.Particles;
 import com.makotomiyamoto.hgspecials.meta.Specials;
+import com.makotomiyamoto.hgspecials.meta.Template;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
@@ -17,12 +18,8 @@ public final class Spinach implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!Eval.shouldPassActionScript(event)
-                || event.getItem() == null
-                || event.getItem().getType().equals(Material.AIR)) {
-            return;
-        }
-        assert event.getItem().getItemMeta() != null;
-        if (!event.getItem().getItemMeta().getDisplayName().equals(Specials.CAN_OF_SPINACH)) {
+                || Eval.mightThrowAStupidNullError(event)
+                || !Eval.match(event.getItem(), Specials.CAN_OF_SPINACH)) {
             return;
         }
         Player player = event.getPlayer();
@@ -30,7 +27,7 @@ public final class Spinach implements Listener {
             player.sendMessage(ChatColor.RED + "You are already under this effect!");
             return;
         }
-        player.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "Events" + ChatColor.DARK_GRAY + "] "
+        player.sendMessage(Template.PREFIX
                 + ChatColor.GREEN + "+4 hearts "
                 + ChatColor.GRAY + "for "
                 + ChatColor.AQUA + "1:00"
@@ -40,5 +37,6 @@ public final class Spinach implements Listener {
         player.getInventory().getItemInMainHand().setAmount(
                 player.getInventory().getItemInMainHand().getAmount() - 1);
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.NEUTRAL, 0.4f, 1.5f);
+        Particles.surroundHearts(player);
     }
 }
